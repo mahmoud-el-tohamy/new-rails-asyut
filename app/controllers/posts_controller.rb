@@ -1,6 +1,9 @@
 class PostsController < ApplicationController
+  before_action :set_post, only: %i[ show edit update destroy ]
+
   # GET /posts
   def index
+    @posts = Post.all
   end
 
   # GET /posts/:id
@@ -9,10 +12,18 @@ class PostsController < ApplicationController
 
   # GET /posts/new
   def new
+    @post = Post.new
   end
 
   # POST /posts/commit
   def create
+    @post = Post.new(post_params)
+
+    if @post.save
+      redirect_to @post
+    else
+      render :new, status: :unprocessable_entity
+    end
   end
 
   # GET /posts/:id/edit
@@ -21,9 +32,26 @@ class PostsController < ApplicationController
 
   # PATCH/PUT /posts/:id
   def update
+    if @post.update(post_params)
+      redirect_to @post
+    else
+      render :edit, status: :unprocessable_entity
+    end
   end
 
   # DELETE /posts/:id
   def destroy
+    @post.destroy
+    redirect_to posts_url
   end
+
+  private
+
+    def set_post
+      @post = Post.find(params[:id])
+    end
+
+    def post_params
+      params.require(:post).permit(:title, :content)
+    end
 end
