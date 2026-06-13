@@ -15,7 +15,7 @@ class PostsController < ApplicationController
     @post = Post.new
   end
 
-  # POST /posts/commit
+  # POST /posts
   def create
     @post = Post.new(post_params)
 
